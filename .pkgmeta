@@ -1,0 +1,16 @@
+# Packaging (BigWigs packager / CurseForge): what goes into the addon zip.
+# Development files stay out. The font licenses in Media/Fonts (OFL-*.txt),
+# LICENSE and CHANGELOG.md go in.
+package-as: ProseccoAdditions
+
+ignore:
+  - .claude
+  - .luacheckrc
+  - docs
+  - tools
+  - CLAUDE.md
+  - DEVNOTES.md
+  - IDEER.md
+  - screenshots
+  # Off until tested in game: not in the .toc, kept for later.
+  - Modules/Trinkets.lua
