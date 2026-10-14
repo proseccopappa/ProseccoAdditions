@@ -39,6 +39,11 @@ local running = {}      -- key -> true from a successful Enable to the next Disa
 -- "missing" (it returned false). Not retried until /reload or switched off,
 -- so the error or chat line is not repeated on every settings change.
 local failed = {}
+-- Why no module may start this session (Integrations sets it while loading,
+-- before the first Apply); nil: they may.
+local blocked
+function ns.BlockModules(reason) blocked = reason end
+function ns.ModulesBlocked() return blocked ~= nil end
 
 function ns.RegisterModule(key, def)
     assert(type(key) == "string" and key:match("^%a[%w_]*$"), "ProseccoAdditions: bad module key")
@@ -97,7 +102,8 @@ function ns.Apply(atLogin, switched)
         end
         if want ~= (running[M.key] == true) and not failed[M.key] then
             if want then
-                local ok, started = Call(M, "Enable")
+                local ok, started = true, false
+                if not blocked then ok, started = Call(M, "Enable") end
                 -- A failed Enable is not running (no Apply on half a module)
                 -- and is not retried on every settings change; nor is one
                 -- that returned false.
@@ -132,6 +138,7 @@ function ns.Apply(atLogin, switched)
             status[#status + 1] = M.key
         end
     end
+    if atLogin and blocked then ns.Print(blocked) end
     if atLogin then
         ns.Log("SESSION", "modules on: %s", #status > 0 and table.concat(status, ", ") or "none")
     end

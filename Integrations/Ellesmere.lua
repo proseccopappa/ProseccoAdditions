@@ -11,6 +11,41 @@ ns.Ellesmere = E
 
 local function EUI() return _G.EllesmereUI end
 
+-- What the modules call in EllesmereUI outside its options menu, all from its
+-- main addon and set while it loads, before ours (the content header calls
+-- are set later, with the menu). A newer EllesmereUI that renamed one
+-- would give Lua errors in every module, so none starts and the chat says
+-- which are missing. Calls already checked where they are made are left out.
+local NEEDED = {
+    "AbbreviateNumber", "AppendSharedMediaTextures", "ApplyBorderStyle", "ApplyModuleFont",
+    "BORDER_EDGE_MAP", "BorderCompanionThickness", "BorderPx", "BorderPxStep",
+    "BuildBarTextureTables", "CLASS_ICON_SPRITE_COORDS", "ELLESMERE_GREEN", "GetActiveModule",
+    "GetActiveProfileName", "GetBorderDefaults", "GetBorderTextureDropdown", "GetClassColor",
+    "GetFontOutlineFlag", "GetFontPath", "GetFontUseShadow", "GetPluginModuleKey",
+    "GetProfileList", "GetProfilesDB", "InvalidateModulePageCache", "IsSearchPrebuild",
+    "IsShown", "OpenPlugin", "PP", "PlaceBorderDividerV", "ProfileChangesFont",
+    "ProfileChangesStyle", "ProfileChangesWindowSkins", "RefreshAllAddons", "RefreshPage",
+    "RegisterOnHide", "RegisterOnShow", "RegisterPlugin", "ResolveTexturePath",
+    "ShowConfirmPopup", "SwitchProfile",
+}
+
+-- The names in NEEDED that EllesmereUI lacks; empty when all are there.
+function E.MissingAPI()
+    local eui, missing = EUI(), {}
+    for _, name in ipairs(NEEDED) do
+        if not (eui and eui[name] ~= nil) then missing[#missing + 1] = name end
+    end
+    return missing
+end
+
+do
+    local missing = E.MissingAPI()
+    if #missing > 0 then
+        ns.BlockModules(("EllesmereUI %s lacks %s. The modules stay off until ProseccoAdditions is updated for it.")
+            :format(C_AddOns.GetAddOnMetadata("EllesmereUI", "Version") or "?", table.concat(missing, ", ")))
+    end
+end
+
 -- Border on one of OUR frames. `px` = whole pixels at UIParent scale, the
 -- unit of Ellesmere's Border Size sliders. Ellesmere's legacy `size` is a
 -- step 1-4 for textured styles, so the exact size goes in as edgePx (15th
@@ -185,6 +220,7 @@ end
 
 -- Our section in Ellesmere's options panel (its plugin API).
 function E.RegisterPlugin(spec)
+    if ns.ModulesBlocked() then return false end       -- RegisterPlugin may be among the missing
     return EUI().RegisterPlugin(ADDON, spec)
 end
 
