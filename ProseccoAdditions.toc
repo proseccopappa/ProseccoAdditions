@@ -1,0 +1,35 @@
+## Interface: 16001
+## Title: Prosecco Additions
+## Notes: A collection of modular enhancements for EllesmereUI. Every module is off until you turn it on.
+## Author: Alexander
+## IconTexture: Interface\AddOns\ProseccoAdditions\Media\RXP\rxp_logo-64
+## X-License: CC BY-NC-SA 4.0
+## Version: 0.7.0-alpha1
+## SavedVariables: ProseccoUIDB
+## Dependencies: EllesmereUI
+## OptionalDeps: Questie, RXPGuides
+
+Media\Manifest.lua
+Core\Log.lua
+Core\Core.lua
+Core\Presets.lua
+Core\Modules.lua
+Core\Border.lua
+Core\Media.lua
+Core\Options.lua
+Integrations\Ellesmere.lua
+Integrations\RXP.lua
+Integrations\Questie.lua
+Modules\Panels.lua
+Modules\Microbar.lua
+Modules\Volume.lua
+Modules\Minimap.lua
+Modules\MinimapButtons.lua
+Modules\DamageMeter.lua
+Modules\RXPTheme.lua
+Modules\Chat.lua
+Modules\QuestTracker.lua
+Modules\QuestTrackerFrame.lua
+Modules\QuestTrackerDialogs.lua
+Modules\TargetFrame.lua
+Modules\XPBar.lua

@@ -1,0 +1,18 @@
+ProseccoAdditions
+Copyright (c) 2026 proseccopappa
+
+This work is licensed under the Creative Commons
+Attribution-NonCommercial-ShareAlike 4.0 International License
+(CC BY-NC-SA 4.0). To view a copy of this license, visit
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+In short: you may use, copy, change and share it, as long as you credit
+the author, do not use it for commercial purposes (no selling), and share
+changed versions under the same license. The license at the link above is
+what applies.
+
+This license covers ProseccoAdditions' code and its own textures: Media/RXP,
+drawn by tools/rxp_textures.py, and Media/MicroMenu and Media/Portraits, made
+for this addon. The fonts in Media/Fonts are Nunito and Bebas Neue under the
+SIL Open Font License 1.1; their license texts are Media/Fonts/OFL-Nunito.txt
+and Media/Fonts/OFL-BebasNeue.txt.
