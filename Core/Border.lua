@@ -1,4 +1,4 @@
--- ProseccoUI / Core / Border.lua
+-- ProseccoAdditions / Core / Border.lua
 -- The only border code in the addon: modules draw borders with
 -- ns.Border.Apply and build their border menu rows with ns.Border.Rows.
 --

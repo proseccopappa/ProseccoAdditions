@@ -4,8 +4,8 @@
 ## Author: proseccopappa
 ## IconTexture: Interface\AddOns\ProseccoAdditions\Media\RXP\rxp_logo-64
 ## X-License: CC BY-NC-SA 4.0
-## Version: 0.7.0-alpha2
-## SavedVariables: ProseccoUIDB
+## Version: 0.7.0-alpha3
+## SavedVariables: ProseccoAdditionsDB, ProseccoUIDB
 ## Dependencies: EllesmereUI
 ## OptionalDeps: Questie, RXPGuides
 

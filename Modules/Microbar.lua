@@ -1,4 +1,4 @@
--- ProseccoUI / Modules / Microbar.lua
+-- ProseccoAdditions / Modules / Microbar.lua
 -- A bar of our own with the game's micro menu buttons the user picks, plus
 -- the volume speaker (its popup is in Volume.lua, the same module). The
 -- module key stays "volume", the key of the Volume module this replaces, so

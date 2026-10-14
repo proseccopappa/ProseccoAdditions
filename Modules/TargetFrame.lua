@@ -1,4 +1,4 @@
--- ProseccoUI / Modules / TargetFrame.lua
+-- ProseccoAdditions / Modules / TargetFrame.lua
 -- Empty frames with Ellesmere's borders where its target frame stands while
 -- there is no target, and where its player cast bar stands while nothing is
 -- cast. Each has its own switch.

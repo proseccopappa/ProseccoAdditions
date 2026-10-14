@@ -1,4 +1,4 @@
--- ProseccoUI / Modules / Volume.lua
+-- ProseccoAdditions / Modules / Volume.lua
 -- The Microbar's volume popup (the same module as Microbar.lua, which draws
 -- the bar): a slider and an on/off box for each of the five sound channels,
 -- opened by a click on the speaker; the wheel on the speaker sets Master.

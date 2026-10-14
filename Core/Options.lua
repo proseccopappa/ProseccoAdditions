@@ -1,4 +1,4 @@
--- ProseccoUI / Core / Options.lua
+-- ProseccoAdditions / Core / Options.lua
 -- Our section in Ellesmere's options panel, built with Ellesmere's widgets
 -- through its plugin API. Sidebar rows: General (tabs General, Global
 -- Settings and Profiles), then one row per module that is on, in load order.
@@ -499,7 +499,7 @@ function ns.Options.Register()
             inMenu[M.key] = true
         end
     end
-    registered = ns.Ellesmere.RegisterPlugin({ label = "Prosecco UI", modules = modules })
+    registered = ns.Ellesmere.RegisterPlugin({ label = "Prosecco Additions", modules = modules })
     ns.Log("SESSION", "options registered: %s", tostring(registered))
 end
 
@@ -516,6 +516,6 @@ end
 
 function ns.Options.Open()
     if not (registered and ns.Ellesmere.OpenPlugin()) then
-        ns.Print("the settings could not be opened (in combat, or not registered: see /pui log).")
+        ns.Print("the settings could not be opened (in combat, or not registered: see /prosecco log).")
     end
 end

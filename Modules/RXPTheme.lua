@@ -1,7 +1,7 @@
--- ProseccoUI / Modules / RXPTheme.lua
+-- ProseccoAdditions / Modules / RXPTheme.lua
 -- A RestedXP Guides theme, "Prosecco", through RXP's theme API: colours,
 -- font and flat textures of our own (RXP's art is not copied). The user
--- picks it in RXP's options; ProseccoUI never sets RXP's theme.
+-- picks it in RXP's options; ProseccoAdditions never sets RXP's theme.
 --
 -- What a theme cannot do is done in one pass after RXP draws, only while
 -- Prosecco is in use: font and outline, our backgrounds and border, header

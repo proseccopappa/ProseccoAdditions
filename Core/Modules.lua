@@ -1,4 +1,4 @@
--- ProseccoUI / Core / Modules.lua
+-- ProseccoAdditions / Core / Modules.lua
 -- The module registry and the one on/off path.
 --
 -- A module file registers itself while it loads and does nothing else:
@@ -66,7 +66,7 @@ function ns.GetModule(key) return byKey[key] end
 -- when the lock is lifted.
 function ns.IsModuleEnabled(key) return ns.db.modules[key].enabled == true and not byKey[key].locked end
 
--- This session's state, for /pui status: "on", "FAILED" (Enable threw),
+-- This session's state, for /prosecco status: "on", "FAILED" (Enable threw),
 -- "not started" (Enable returned false), "locked" or "off".
 function ns.ModuleState(key)
     if failed[key] == "error" then return "FAILED" end

@@ -1,4 +1,4 @@
--- ProseccoUI / Modules / Panels.lua
+-- ProseccoAdditions / Modules / Panels.lua
 -- Cosmetic panels: empty frames you create, place and style, each with its
 -- own size, anchor (the screen or a named frame), layer, background and
 -- border. Panels are named frames (ProseccoUIPanel<id>) so other frames can
@@ -12,7 +12,7 @@ local _, ns = ...
 local STRATA = { "BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "FULLSCREEN", "FULLSCREEN_DIALOG", "TOOLTIP" }
 local ANCHORS = { "CENTER", "TOP", "BOTTOM", "LEFT", "RIGHT",
                   "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT" }
-local NAME_PREFIX = "ProseccoUIPanel"
+local NAME_PREFIX = "ProseccoAdditionsPanel"
 
 local M = ns.RegisterModule("panels", {
     title       = "Panels",
@@ -110,6 +110,16 @@ local function MakesLoop(p, name)
         q = (q.attach == "frame") and PanelByName(q.parent) or nil
     end
     return false
+end
+
+-- Panels were named ProseccoUIPanel<id> before 0.7.0-alpha3: a panel anchored
+-- to another panel by the old name gets the new one.
+function M:Migrate(cfg)
+    if type(cfg.list) ~= "table" then return end
+    for _, p in ipairs(cfg.list) do
+        local id = type(p) == "table" and tostring(p.parent or ""):match("^ProseccoUIPanel(%d+)$")
+        if id then p.parent = NAME_PREFIX .. id end
+    end
 end
 
 -- The frame a panel is anchored to, and whether the one asked for was found.

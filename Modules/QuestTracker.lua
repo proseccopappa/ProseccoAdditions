@@ -1,4 +1,4 @@
--- ProseccoUI / Modules / QuestTracker.lua
+-- ProseccoAdditions / Modules / QuestTracker.lua
 -- Our own quest tracker: the data half and the module's on/off. The quest
 -- log is read from Blizzard's quest API into a plain list; the frame
 -- (QuestTrackerFrame.lua) reads it only through M.Quests(). An objective's

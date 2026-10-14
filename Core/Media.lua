@@ -1,4 +1,4 @@
--- ProseccoUI / Core / Media.lua
+-- ProseccoAdditions / Core / Media.lua
 -- Registers the files in Media/Manifest.lua with LibSharedMedia (shipped with
 -- EllesmereUI). Ellesmere's dropdowns list every SharedMedia file and pick up
 -- late registrations, so registering is all it takes. Not a module: it only

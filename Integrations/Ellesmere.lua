@@ -1,5 +1,5 @@
--- ProseccoUI / Integrations / Ellesmere.lua
--- Everything ProseccoUI touches in EllesmereUI goes through this file. Only
+-- ProseccoAdditions / Integrations / Ellesmere.lua
+-- Everything ProseccoAdditions touches in EllesmereUI goes through this file. Only
 -- public API (the plugin API and functions without a leading "_"); no field
 -- starting with "_" is read or written here.
 -- Checked against EllesmereUI 9.3.9 (a3b97b7).
@@ -381,7 +381,7 @@ function E.DMWindowCount()
 end
 
 -- Forever Essentials' Threat Meter keeps account-wide settings in
--- EllesmereUIDB.threatMeter. ProseccoUI does not style it; the target stays
+-- EllesmereUIDB.threatMeter. ProseccoAdditions does not style it; the target stays
 -- so the values once taken from it can be given back.
 local function ThreatSettings(create)
     local db = _G.EllesmereUIDB
@@ -1016,7 +1016,7 @@ end
 -- Icon, the icon's) left edge to the fill's end, always solid; otherwise its
 -- border style round the whole row; the icon border round the icon. Drawn
 -- on frames of ours, children of the test row, kept in a weak table. A
--- mirror of Ellesmere's row look, not one of ProseccoUI's borders.
+-- mirror of Ellesmere's row look, not one of ProseccoAdditions's borders.
 local rowParts = setmetatable({}, { __mode = "k" })
 function E.DMRowBorder(row, fill, icon, s)
     local p = rowParts[row]

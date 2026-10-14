@@ -1,4 +1,4 @@
--- ProseccoUI / Modules / QuestTrackerDialogs.lua
+-- ProseccoAdditions / Modules / QuestTrackerDialogs.lua
 -- The guide dot next to quests in NPC dialogs (gossip window and quest
 -- greeting panel) for the quests the loaded RXP guide names. Our own
 -- texture on Blizzard's line buttons, which are plain Buttons, not secure.

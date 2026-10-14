@@ -1,22 +1,22 @@
--- ProseccoUI / Core / Log.lua
--- Debug log: a rolling list of text lines in ProseccoUIDB.log.lines (outside
+-- ProseccoAdditions / Core / Log.lua
+-- Debug log: a rolling list of text lines in ProseccoAdditionsDB.log.lines (outside
 -- the profiles), written to disk on /reload or logout so it can be read
--- outside the game. ProseccoUI errors, blocked actions and ns.Log land here.
+-- outside the game. ProseccoAdditions errors, blocked actions and ns.Log land here.
 --   ns.Log("Panels", "panel %d at %d,%d", id, x, y)
---   /pui mark <text>   drop a marker, then /reload
---   /pui log [n]       show the last lines;  /pui log clear | on | off
+--   /prosecco mark <text>   drop a marker, then /reload
+--   /prosecco log [n]       show the last lines;  /prosecco log clear | on | off
 
 local ADDON, ns = ...
 
 local LOG_MAX = 400
-local pending = {}          -- lines logged before ProseccoUIDB exists
+local pending = {}          -- lines logged before ProseccoAdditionsDB exists
 local sessionStart = GetTime()
 local seenErrors = {}       -- message -> line index: a looping error is counted
 local justLogged            -- an error our xpcall logged; the global hook skips it once
 
--- ProseccoUIDB is nil until our ADDON_LOADED; until then lines wait in `pending`.
+-- ProseccoAdditionsDB is nil until our ADDON_LOADED; until then lines wait in `pending`.
 local function Store()
-    local db = ProseccoUIDB
+    local db = ProseccoAdditionsDB
     if type(db) ~= "table" then return pending end
     if type(db.log) ~= "table" then db.log = {} end
     if type(db.log.lines) ~= "table" then db.log.lines = {} end
@@ -29,7 +29,7 @@ local function Store()
 end
 
 local function Enabled()
-    local db = ProseccoUIDB
+    local db = ProseccoAdditionsDB
     return not (type(db) == "table" and type(db.log) == "table" and db.log.enabled == false)
 end
 
@@ -86,7 +86,7 @@ function ns.ErrorHandler(where)
     end
 end
 
--- Catch ProseccoUI errors outside our own xpcalls (scripts, hooks, timers):
+-- Catch ProseccoAdditions errors outside our own xpcalls (scripts, hooks, timers):
 -- through BugGrabber when installed, else chained onto the current error
 -- handler, which still gets everything. Called once, at login.
 function ns.HookErrors()
@@ -112,7 +112,7 @@ function ns.HookErrors()
 end
 
 -- The addons a bug report needs to know about, as "Name=version" for the
--- loaded ones (the session header and /pui status).
+-- loaded ones (the session header and /prosecco status).
 local RELATED_ADDONS = { "EllesmereUI", "EllesmereUIChat", "EllesmereUIDamageMeters",
     "EllesmereUIQuestTracker", "EllesmereUIForeverEssentials", "Questie", "RXPGuides",
     "BugSack", "ProseccoTools" }
@@ -145,14 +145,14 @@ blockFrame:SetScript("OnEvent", function(_, event, who, func)
     if who == ADDON then ns.Log("ERROR", "%s: %s (taint)", event, tostring(func)) end
 end)
 
--- /pui log [n | clear | on | off]
+-- /prosecco log [n | clear | on | off]
 function ns.LogCommand(arg)
     local lines = Store()
     if arg == "clear" then
         wipe(lines); wipe(seenErrors)
         ns.Print("debug log cleared.")
     elseif arg == "off" or arg == "on" then
-        ProseccoUIDB.log.enabled = (arg == "on")
+        ProseccoAdditionsDB.log.enabled = (arg == "on")
         ns.Print("debug log " .. arg .. " (errors and markers are always kept).")
     else
         local n = tonumber(arg) or 15

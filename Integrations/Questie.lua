@@ -1,5 +1,5 @@
--- ProseccoUI / Integrations / Questie.lua
--- Everything ProseccoUI touches in Questie goes through this file: only
+-- ProseccoAdditions / Integrations / Questie.lua
+-- Everything ProseccoAdditions touches in Questie goes through this file: only
 -- Questie.db.profile.trackerEnabled and LibQuestieDB.
 --
 -- Questie builds its tracker at login only while trackerEnabled is on, so a

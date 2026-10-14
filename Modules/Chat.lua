@@ -1,4 +1,4 @@
--- ProseccoUI / Modules / Chat.lua
+-- ProseccoAdditions / Modules / Chat.lua
 -- Our panels around Ellesmere's chat: one around the chat text, one around
 -- the tab row, with a gap between them. Ellesmere keeps every chat function;
 -- its message frame, tabs, edit box, sidebar and fade are not touched.
@@ -400,7 +400,7 @@ local function OnBoxHide(eb)
     WatchBox(false)
 end
 
-local OWNER = "ProseccoUI_Chat"
+local OWNER = "ProseccoAdditions_Chat"
 
 local function Listen(on)
     if on then

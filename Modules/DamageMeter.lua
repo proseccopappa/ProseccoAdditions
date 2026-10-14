@@ -1,4 +1,4 @@
--- ProseccoUI / Modules / DamageMeter.lua
+-- ProseccoAdditions / Modules / DamageMeter.lua
 -- A frame of ours round each of Ellesmere's damage meter windows (background,
 -- padding, border), plus test bars in Ellesmere's row look and a preview on
 -- our settings page. A window showing Threat gets the same frame.

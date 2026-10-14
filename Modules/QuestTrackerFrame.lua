@@ -1,4 +1,4 @@
--- ProseccoUI / Modules / QuestTrackerFrame.lua
+-- ProseccoAdditions / Modules / QuestTrackerFrame.lua
 -- The Quest Tracker's frame and settings page. Reads the quest list through
 -- M.Quests(); calls the quest log API itself only for clicks (abandon,
 -- open), the item buttons' cooldown and the order.

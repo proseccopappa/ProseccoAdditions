@@ -53,11 +53,11 @@ Settings page. Profiles are per character and can be exported and imported.
 
 ## Commands
 
-- `/pui` opens the settings.
-- `/pui status` lists the modules, the version, the client build, the profile and
+- `/prosecco` opens the settings.
+- `/prosecco status` lists the modules, the version, the client build, the profile and
   the addons it found.
-- `/pui profile` shows this character's profile.
-- `/pui help` lists every command.
+- `/prosecco profile` shows this character's profile.
+- `/prosecco help` lists every command.
 
 Some changes need a `/reload`; the settings say so where they do.
 

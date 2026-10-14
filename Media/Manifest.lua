@@ -1,4 +1,4 @@
--- ProseccoUI / Media / Manifest.lua
+-- ProseccoAdditions / Media / Manifest.lua
 -- Every file in Media/ that is registered with LibSharedMedia, by type.
 -- WoW cannot list a folder, so a new file needs a line here, and the game
 -- must be restarted (not just /reload) to load a file added since it started.

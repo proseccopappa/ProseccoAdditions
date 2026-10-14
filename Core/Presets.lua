@@ -1,4 +1,4 @@
--- ProseccoUI / Core / Presets.lua
+-- ProseccoAdditions / Core / Presets.lua
 -- The looks a new profile can start from (Profiles > NEW PROFILE > Start
 -- from). Data only: ns.CreateProfile copies one into a new profile and fills
 -- the rest with the installed defaults.

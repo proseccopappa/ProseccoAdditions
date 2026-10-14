@@ -1,5 +1,5 @@
--- ProseccoUI / Integrations / RXP.lua
--- Everything ProseccoUI touches in RestedXP Guides goes through this file.
+-- ProseccoAdditions / Integrations / RXP.lua
+-- Everything ProseccoAdditions touches in RestedXP Guides goes through this file.
 -- The theme API (addon:RegisterTheme) is the main road; _G.RXPGuides_Themes
 -- cannot be used, since RXP reads it on its own ADDON_LOADED, before ours.
 --

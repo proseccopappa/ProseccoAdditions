@@ -1,4 +1,4 @@
--- ProseccoUI / Modules / XPBar.lua
+-- ProseccoAdditions / Modules / XPBar.lua
 -- An XP bar with the level and percent on it and the levelling numbers in an
 -- info panel over it. Behind the XP fill, the XP of completed quests in the
 -- log and the rested XP show how far they reach.

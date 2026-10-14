@@ -1,12 +1,12 @@
--- ProseccoUI / Core / Core.lua
--- The SavedVariables table, profiles, ns.Apply(), export/import and /pui.
+-- ProseccoAdditions / Core / Core.lua
+-- The SavedVariables table, profiles, ns.Apply(), export/import and /prosecco.
 --
--- ns.db IS the active profile table (ProseccoUIDB.profiles[name]); a profile
+-- ns.db IS the active profile table (ProseccoAdditionsDB.profiles[name]); a profile
 -- switch points it at another table and runs ns.Apply(). Nothing holds a
 -- copy, and code reads ns.db at call time, never from an upvalue: a switch,
 -- reset or import replaces the table.
 --
--- ProseccoUIDB = {
+-- ProseccoAdditionsDB = {
 --   version = 1,
 --   activeProfile = { ["Name - Realm"] = "Default" },  -- per character
 --   profiles = { Default = { global = { border = {...} },
@@ -256,13 +256,13 @@ function ns.ResetModuleSettings(key, defaults)
 end
 
 function ns.ActiveProfileName()
-    local db = ProseccoUIDB
+    local db = ProseccoAdditionsDB
     return (type(db) == "table" and db.activeProfile and db.activeProfile[ns.CharKey()]) or DEFAULT_PROFILE
 end
 
 function ns.ProfileNames()
     local out = {}
-    for name in pairs(ProseccoUIDB.profiles) do out[#out + 1] = name end
+    for name in pairs(ProseccoAdditionsDB.profiles) do out[#out + 1] = name end
     table.sort(out)
     return out
 end
@@ -274,8 +274,8 @@ end
 -- asks for a reload. Cancel keeps the switch.
 local ownedChanges = 0      -- values written into other addons this session
 local function Activate(name)
-    ProseccoUIDB.activeProfile[ns.CharKey()] = name
-    ns.db = FillProfile(ProseccoUIDB.profiles[name])
+    ProseccoAdditionsDB.activeProfile[ns.CharKey()] = name
+    ns.db = FillProfile(ProseccoAdditionsDB.profiles[name])
     ns.Log("PROFILE", "active profile: %s", name)
     local before = ownedChanges
     local needReload = ns.Apply(false, true)
@@ -300,7 +300,7 @@ local function CleanName(name)
 end
 
 function ns.SwitchProfile(name)
-    if not ProseccoUIDB.profiles[name] then return false, "no such profile." end
+    if not ProseccoAdditionsDB.profiles[name] then return false, "no such profile." end
     if name ~= ns.ActiveProfileName() then Activate(name) end
     return true
 end
@@ -340,38 +340,38 @@ end
 function ns.CreateProfile(name, source, preset)
     name = CleanName(name)
     if name == "" then return false, "type a profile name first." end
-    if ProseccoUIDB.profiles[name] then return false, "a profile with that name already exists." end
-    local src = source and ProseccoUIDB.profiles[source]
+    if ProseccoAdditionsDB.profiles[name] then return false, "a profile with that name already exists." end
+    local src = source and ProseccoAdditionsDB.profiles[source]
     local new = src and ns.DeepCopy(src)
     if not new and preset then
         new = ns.PresetProfile(preset)
         if not new then return false, "no such preset." end
     end
-    ProseccoUIDB.profiles[name] = new or {}
+    ProseccoAdditionsDB.profiles[name] = new or {}
     Activate(name)
     return true, name
 end
 
 -- Overwrites the active profile with a copy of another one.
 function ns.CopyProfileInto(name)
-    local src = ProseccoUIDB.profiles[name]
+    local src = ProseccoAdditionsDB.profiles[name]
     if not src then return false, "no such profile." end
     local active = ns.ActiveProfileName()
     if name == active then return false, "that is the active profile." end
-    ProseccoUIDB.profiles[active] = ns.DeepCopy(src)
+    ProseccoAdditionsDB.profiles[active] = ns.DeepCopy(src)
     Activate(active)
     return true
 end
 
 function ns.DeleteProfile(name)
-    local profiles = ProseccoUIDB.profiles
+    local profiles = ProseccoAdditionsDB.profiles
     if not profiles[name] then return false, "no such profile." end
     if #ns.ProfileNames() < 2 then return false, "this is the only profile." end
     profiles[name] = nil
     -- Every character that used it falls back to the first profile left.
     local fallback = ns.ProfileNames()[1]
-    for key, p in pairs(ProseccoUIDB.activeProfile) do
-        if p == name then ProseccoUIDB.activeProfile[key] = fallback end
+    for key, p in pairs(ProseccoAdditionsDB.activeProfile) do
+        if p == name then ProseccoAdditionsDB.activeProfile[key] = fallback end
     end
     if ns.ActiveProfileName() == fallback and ns.db ~= profiles[fallback] then
         Activate(fallback)
@@ -382,7 +382,7 @@ end
 -- The active profile back to the installed defaults.
 function ns.ResetProfile()
     local active = ns.ActiveProfileName()
-    ProseccoUIDB.profiles[active] = {}
+    ProseccoAdditionsDB.profiles[active] = {}
     Activate(active)
 end
 
@@ -391,7 +391,8 @@ end
 -- edited by hand or kept as a backup.
 -- ---------------------------------------------------------------------------
 
-local EXPORT_PREFIX = "PUI1"
+local EXPORT_PREFIX = "PA1"
+local OLD_PREFIX = "PUI1"       -- exports made before 0.7.0-alpha3 still import
 
 local function Serialize(v, out)
     local t = type(v)
@@ -480,7 +481,7 @@ end
 -- Replaces the active profile. Returns true, or false and a reason to print;
 -- on false the active profile is as it was.
 function ns.ImportProfile(text)
-    text = CleanName(text):gsub("^" .. EXPORT_PREFIX, "")
+    text = CleanName(text):gsub("^" .. EXPORT_PREFIX, ""):gsub("^" .. OLD_PREFIX, "")
     if text == "" then return false, "nothing to import." end
     if not text:match("^%b{}$") or not IsPlainData(text) then
         return false, "that does not look like a ProseccoAdditions export."
@@ -499,7 +500,7 @@ function ns.ImportProfile(text)
         return false, "the setting " .. at .. " has the wrong kind of value; nothing was imported."
     end
     local active = ns.ActiveProfileName()
-    ProseccoUIDB.profiles[active] = data
+    ProseccoAdditionsDB.profiles[active] = data
     Activate(active)
     return true
 end
@@ -511,11 +512,20 @@ end
 -- SavedVariables exist from our ADDON_LOADED. Only the shape is checked here;
 -- profile contents get their defaults when they become active.
 local function InitDB()
-    local fresh = type(ProseccoUIDB) ~= "table"
-    if fresh then ProseccoUIDB = {} end
-    local db = ProseccoUIDB
+    -- The settings were saved as ProseccoUIDB before 0.7.0-alpha3; both are
+    -- in the .toc so the old one still loads and moves over. The old one is
+    -- cleared only once the new one has come back from disk: after a /reload
+    -- WoW still saves by the old .toc, which knows only ProseccoUIDB.
+    if ProseccoAdditionsDB == nil and type(ProseccoUIDB) == "table" then
+        ProseccoAdditionsDB = ProseccoUIDB
+    elseif type(ProseccoAdditionsDB) == "table" then
+        ProseccoUIDB = nil
+    end
+    local fresh = type(ProseccoAdditionsDB) ~= "table"
+    if fresh then ProseccoAdditionsDB = {} end
+    local db = ProseccoAdditionsDB
     -- The first-start line is for a new install only: an existing
-    -- ProseccoUIDB means the addon has started on this account before.
+    -- ProseccoAdditionsDB means the addon has started on this account before.
     if db.welcomed == nil then db.welcomed = not fresh end
     db.version = db.version or DB_VERSION
     if type(db.activeProfile) ~= "table" then db.activeProfile = {} end
@@ -526,12 +536,12 @@ local function InitDB()
 end
 
 -- One chat line the first time the addon starts on the account (all modules
--- start off, so nothing else shows that it is there). ProseccoUIDB is
+-- start off, so nothing else shows that it is there). ProseccoAdditionsDB is
 -- account-wide, so it shows once per account, not per character.
 function ns.FirstStartNotice()
-    if ProseccoUIDB.welcomed then return end
-    ProseccoUIDB.welcomed = true
-    ns.Print("every module is off until you turn it on. Type /pui to open the settings.")
+    if ProseccoAdditionsDB.welcomed then return end
+    ProseccoAdditionsDB.welcomed = true
+    ns.Print("every module is off until you turn it on. Type /prosecco to open the settings.")
 end
 
 -- Another addon's values from before a module took them over, given back
@@ -539,15 +549,15 @@ end
 -- belong to the other addon, and a profile switch, reset or import must not
 -- carry them off or throw them away.
 function ns.OwnedStore(key)
-    local owned = ProseccoUIDB.owned
+    local owned = ProseccoAdditionsDB.owned
     if type(owned[key]) ~= "table" then owned[key] = {} end
     return owned[key]
 end
 
--- This character's table in ProseccoUIDB.chars: data that belongs to the
+-- This character's table in ProseccoAdditionsDB.chars: data that belongs to the
 -- character, not to a profile (several characters can share a profile).
 local function Char()
-    local chars = ProseccoUIDB.chars
+    local chars = ProseccoAdditionsDB.chars
     local key = ns.CharKey()
     if type(chars[key]) ~= "table" then chars[key] = {} end
     local c = chars[key]
@@ -569,13 +579,13 @@ end
 function ns.LoginStamp() return Char().login end
 
 -- ---------------------------------------------------------------------------
--- Spec profiles: the ProseccoUI and Ellesmere profiles this character
+-- Spec profiles: the ProseccoAdditions and Ellesmere profiles this character
 -- switches to when it changes between its Primary and Secondary spec.
 -- Ellesmere's own spec profiles cannot tell the two apart on Forever (it
 -- sees one spec per class); GetActiveSpecGroup can (1 = Primary).
 --
 -- Per character, since a spec belongs to a character and a profile switch
--- must not change where the next spec change goes (ProseccoUIDB.chars):
+-- must not change where the next spec change goes (ProseccoAdditionsDB.chars):
 --   specProfiles = { [1] = { proseccoui = name, ellesmere = name }, [2] = {...} }
 -- A missing name = that addon does not switch. Only on a change of spec, not
 -- at login: a profile picked by hand stays until the next change.
@@ -639,7 +649,7 @@ local function SwitchForSpec()
             ns.Print("there is no profile \"" .. m.proseccoui .. "\" any more (" .. ns.SpecGroupName(group) .. " spec).")
         end
     end
-    -- A ProseccoUI switch has just redrawn every module.
+    -- A ProseccoAdditions switch has just redrawn every module.
     if ellesmere and not ours then ns.Apply() end
     if #done > 0 then
         ns.Print(ns.SpecGroupName(group) .. " spec: " .. table.concat(done, ", ") .. ".")
@@ -803,15 +813,15 @@ boot:SetScript("OnEvent", function(self, event, name)
         self:UnregisterEvent("PLAYER_LOGIN")
         charKey = UnitName("player") .. " - " .. GetRealmName()
         local profile = ns.ActiveProfileName()
-        if type(ProseccoUIDB.profiles[profile]) ~= "table" then ProseccoUIDB.profiles[profile] = {} end
-        ProseccoUIDB.activeProfile[charKey] = profile
+        if type(ProseccoAdditionsDB.profiles[profile]) ~= "table" then ProseccoAdditionsDB.profiles[profile] = {} end
+        ProseccoAdditionsDB.activeProfile[charKey] = profile
         -- Every profile, not only this character's, so the migration in
         -- FillProfile runs on all of them before the first Apply. An
         -- imported profile is migrated when it is filled.
-        for _, p in pairs(ProseccoUIDB.profiles) do
+        for _, p in pairs(ProseccoAdditionsDB.profiles) do
             if type(p) == "table" then FillProfile(p) end
         end
-        ns.db = ProseccoUIDB.profiles[profile]
+        ns.db = ProseccoAdditionsDB.profiles[profile]
         ns.LogSessionHeader(ns.HookErrors())
         ns.Apply(true)
         ns.Options.Register()
@@ -828,16 +838,16 @@ boot:SetScript("OnEvent", function(self, event, name)
 end)
 
 -- ---------------------------------------------------------------------------
--- /pui
+-- /prosecco
 -- ---------------------------------------------------------------------------
 
 local HELP = {
-    "/pui  open the settings",
-    "/pui status  modules, version, client build, profile and addons",
-    "/pui profile  this character's profile",
-    "/pui log [n|clear|on|off]  the debug log",
-    "/pui mark <text>  a marker in the debug log",
-    "/pui help  this list",
+    "/prosecco  open the settings",
+    "/prosecco status  modules, version, client build, profile and addons",
+    "/prosecco profile  this character's profile",
+    "/prosecco log [n|clear|on|off]  the debug log",
+    "/prosecco mark <text>  a marker in the debug log",
+    "/prosecco help  this list",
 }
 
 local function Help()
@@ -860,9 +870,9 @@ local function Status()
     print("  addons: " .. (#addons > 0 and table.concat(addons, ", ") or "none"))
 end
 
-SLASH_PROSECCOUI1 = "/pui"
-SLASH_PROSECCOUI2 = "/proseccoui"
-SlashCmdList.PROSECCOUI = function(msg)
+SLASH_PROSECCOADDITIONS1 = "/prosecco"
+SLASH_PROSECCOADDITIONS2 = "/proseccoadditions"
+SlashCmdList.PROSECCOADDITIONS = function(msg)
     msg = tostring(msg or "")
     local cmd, rest = msg:match("^%s*(%S*)%s*(.-)%s*$")
     cmd = cmd:lower()

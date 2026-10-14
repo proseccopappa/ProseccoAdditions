@@ -1,4 +1,4 @@
--- ProseccoUI / Modules / MinimapButtons.lua
+-- ProseccoAdditions / Modules / MinimapButtons.lua
 -- The minimap's buttons as ours, each shown always, on mouseover of the map,
 -- or never. Part of the Minimap module, which calls M.LayoutButtons from its
 -- Draw and M.ButtonsOff when it goes off.

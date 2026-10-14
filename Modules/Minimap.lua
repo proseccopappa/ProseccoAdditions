@@ -1,4 +1,4 @@
--- ProseccoUI / Modules / Minimap.lua
+-- ProseccoAdditions / Modules / Minimap.lua
 -- Two panels on Ellesmere's minimap: the zone's name over it, the clock, FPS
 -- and latency under it, each seamed to the map's border or a gap apart.
 --
